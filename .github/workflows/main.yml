@@ -1,44 +1,40 @@
 name: Quality check
 
 on:
-    push:
-        branches: [ main ]
+  push:
+    branches: [ main ]
 
 jobs:
 
-    test:
-        runs-on: ubuntu-latest
-        steps:
-            - name: checkout code
-              uses: actions/checkout@v2
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
 
-            - name: setup python
-              uses: actions/setup-python@v6
-              with:
-                python-version: 3.10
+      - name: setup python
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.10
 
-            - name: install libraries
-              run: pip install -r requirements.txt
+      - name: install libraries
+        run: pip install -r requirements.txt
 
-            - name: run test cases
-              run: pytest --cov=calc --cov-report=html --cov-report=term  --cov-fail-under=80
+      - name: run test cases
+        run: pytest --cov=calc --cov-report=html --cov-report=term --cov-fail-under=80
 
-            - name: download report
-              uses: actions/upload-artifact@v2
-              with:
-                name: quality-report
-                path: htmlcov/
-				
-				
-    deploy:
-        runs-on: ubuntu-latest
-        needs: test
-        steps:
-            - name: checkout code
-              uses: actions/checkout@v2
+      - name: upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: quality-report
+          path: htmlcov/
 
-            - name: deployment status
-              run: echo "application has been deployed...."
-			  
-			  
-			  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+
+      - name: deployment status
+        run: echo "application has been deployed...."
